@@ -176,6 +176,10 @@ func (a *App) RegisterEventListeners(evls ...EventListener) {
 	}
 }
 
+func (a *App) GetService() *Service {
+	return a.service
+}
+
 func getSunriseSunset(s *State, sunrise bool, dateToUse carbon.Carbon, offset ...DurationString) carbon.Carbon {
 	date := dateToUse.Carbon2Time()
 	rise, set := sunriseLib.SunriseSunset(s.latitude, s.longitude, date.Year(), date.Month(), date.Day())
