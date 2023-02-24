@@ -10,6 +10,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -21,6 +22,8 @@ type AuthMessage struct {
 	AccessToken string `json:"access_token"`
 }
 
+var mutex sync.Mutex
+
 // TODO: use a mutex to prevent concurrent writes panic here
 // https://github.com/gorilla/websocket/issues/119
 func WriteMessage[T any](msg T, conn *websocket.Conn, ctx context.Context) error {
@@ -29,6 +32,9 @@ func WriteMessage[T any](msg T, conn *websocket.Conn, ctx context.Context) error
 	if err != nil {
 		return err
 	}
+
+	mutex.Lock()
+	defer mutex.Unlock()
 
 	err = conn.WriteMessage(websocket.TextMessage, msgJson)
 	if err != nil {
